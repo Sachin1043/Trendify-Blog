@@ -1,0 +1,79 @@
+<%- include('partials/header', { title, user: user }) %>
+
+<body>
+  <h1 class="text-center my-4 fw-bold text-gradient">All Posts [ <%= posts.length %> ]</h1>
+
+  <div class="container">
+    <% if (posts.length > 0) { %>
+      <% posts.forEach(post => { %>
+        <div class="card border-0 shadow-lg overflow-hidden mb-4" style="border-radius: 20px;">
+          <% if (post.images && post.images.length > 0) { %>
+            <img
+              src="<%= post.images[0].url %>"
+              class="card-img-top rounded-top"
+              style="height: 400px; object-fit: cover; width: 100%;"
+              alt="Post Image"
+            />
+          <% } %>
+          <div class="card-body bg-light">
+            <h5 class="card-title text-primary"><%= post.title %></h5>
+            <p class="card-text text-muted">
+              by <strong class="text-dark"><%= post.author.username %></strong> • <%= post.createdAt.toDateString() %>
+            </p>
+            <div class="d-flex justify-content-around py-2 text-primary">
+              <i class="bi bi-heart"></i>
+              <i class="bi bi-chat"></i>
+              <i class="bi bi-send"></i>
+            </div>
+            <a href="/posts/<%= post._id %>" class="btn btn-gradient w-100">Read More</a>
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <p class="text-center w-100 text-danger">No posts available.</p>
+    <% } %>
+  </div>
+
+  <script>
+    let page = 1;
+    let isLoading = false;
+
+    window.addEventListener('scroll', () => {
+      if (!isLoading && window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        isLoading = true;
+        fetch(`/posts?page=${++page}`)
+          .then(res => res.text())
+          .then(html => {
+            if (html.trim()) {
+              const newPosts = document.createElement('div');
+              newPosts.innerHTML = html;
+              document.querySelector('.container').appendChild(newPosts);
+            } else {
+              console.log('No more posts available');
+            }
+            isLoading = false;
+          })
+          .catch(() => isLoading = false);
+      }
+    });
+  </script>
+
+  <%- include('partials/footer') %>
+
+  <style>
+    body {
+      background: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvZwqILDkF7RFCvr8qL_6X5Yj2t9UYD1x4og&s) no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .container {
+      max-width: 600px; /* Instagram-style narrow layout */
+      margin: auto;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.1); 
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+  </style>

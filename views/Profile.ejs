@@ -1,0 +1,39 @@
+<%- include('partials/header', { title: 'Profile', user: user }) %>
+
+<div class="container d-flex justify-content-center align-items-center vh-100" style="background: linear-gradient(135deg, #4facfe, #00f2fe); color: #fff; border-radius: 20px; padding: 30px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);">
+  <div class="col-lg-6">
+    <div class="card mb-4" style="background-color: #ffffff; border-radius: 20px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);">
+      <div class="card-body text-center">
+        <% if (user.profilePicture && user.profilePicture.url) { %>
+        <img
+          src="<%= user.profilePicture.url %>"
+          class="rounded-circle mb-3 border border-primary"
+          style="width: 150px; height: 150px"
+          alt="Profile Picture"
+        />
+        <% } else { %>
+        <img
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyzK2fuK3gDNJMRMKGHwHXfyqd6X1pL4lAxg&s" 
+          class="rounded-circle mb-3 border border-secondary"
+          style="width: 150px; height: 150px"
+          alt="Default Profile Picture"
+        />
+        <% } %>
+        <h4 class="card-title text-dark font-weight-bold"><%= user.username %></h4>
+        <p class="card-text text-muted"><strong>Email:</strong> <%= user.email %></p>
+        <p class="card-text text-muted"><strong>Bio:</strong> <%= user.bio %></p>
+        <p class="card-text text-muted">
+          <strong>Date Joined:</strong> <%= user.createdAt.toDateString() %>
+        </p>
+        <p class="card-text text-muted">
+          <strong>Number of Posts:</strong> <%= postCount %>
+        </p>
+        <a href="/user/edit" class="btn btn-primary btn-block rounded-pill">Edit Profile</a>
+        <form action="/user/delete" method="POST" class="mt-3">
+          <button type="submit" class="btn btn-danger btn-block rounded-pill">Delete Account</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
